@@ -6,41 +6,33 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.myflickrapp.network.api.RetrofitBuilder
+import com.example.myflickrapp.repository.FlickrRepository
 import com.example.myflickrapp.ui.theme.MyflickrappTheme
+import com.example.myflickrapp.ui.theme.components.AppNavigation
+import com.example.myflickrapp.viewmodel.MainViewModel
+import com.example.myflickrapp.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val apiService = RetrofitBuilder.flickrApiService
+        val repository = FlickrRepository(apiService)
+        val viewModelFactory = MainViewModelFactory(repository)
+
         setContent {
             MyflickrappTheme {
-                // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+
+                    AppNavigation(viewModel = viewModelFactory.create(MainViewModel::class.java))
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyflickrappTheme {
-        Greeting("Android")
     }
 }
